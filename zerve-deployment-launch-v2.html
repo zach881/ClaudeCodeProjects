@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark" />
+  <title>You built the analysis. Now ship it.</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0; padding: 0;
+      background-color: #18181B;
+      font-family: 'IBM Plex Sans', Arial, sans-serif;
+      font-size: 16px;
+      color: #FBFBFF;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; }
+
+    .email-wrapper {
+      background-color: #18181B;
+      padding: 48px 16px;
+    }
+
+    .email-card {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Logo */
+    .logo-row {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    .logo-wordmark {
+      font-size: 18px;
+      font-weight: 600;
+      color: #FBFBFF;
+      letter-spacing: -0.2px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Gradient bar */
+    .gradient-bar {
+      height: 2px;
+      background: linear-gradient(130deg, #FFD400 -11.66%, #9242DB 67.59%, #3262FF 122.05%);
+      border-radius: 2px;
+      margin-bottom: 48px;
+    }
+
+    /* Badge */
+    .badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: #FFD400;
+      border: 1px solid rgba(255, 212, 0, 0.35);
+      border-radius: 100px;
+      padding: 5px 14px;
+      margin-bottom: 28px;
+    }
+
+    /* Hero */
+    .hero {
+      background-color: #1D1D20;
+      border-radius: 14px;
+      padding: 56px 48px 52px;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .hero h1 {
+      margin: 0 0 24px;
+      font-size: 42px;
+      font-weight: 700;
+      line-height: 50px;
+      letter-spacing: -1px;
+      color: #FBFBFF;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(130deg, #FFD400 -11.66%, #9242DB 67.59%, #3262FF 122.05%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-subhead {
+      font-size: 15px;
+      line-height: 26px;
+      color: #909094;
+      margin: 0 0 16px;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-subhead strong {
+      color: #FBFBFF;
+      font-weight: 500;
+    }
+
+    .hero-launch-line {
+      font-size: 15px;
+      line-height: 26px;
+      color: #FBFBFF;
+      font-weight: 500;
+      margin: 0 0 32px;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      background-color: #FFD400;
+      color: #0D0D11;
+      font-family: 'IBM Plex Sans', Arial, sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      padding: 13px 28px;
+      border-radius: 6px;
+      letter-spacing: 0.1px;
+    }
+
+    /* Features */
+    .features {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .feature-card {
+      background-color: #1D1D20;
+      border-radius: 14px;
+      padding: 36px 40px;
+    }
+
+    .feature-number {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: #505054;
+      margin: 0 0 10px;
+    }
+
+    .feature-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #FBFBFF;
+      margin: 0 0 12px;
+      line-height: 26px;
+    }
+
+    .feature-body {
+      font-size: 14px;
+      line-height: 24px;
+      color: #909094;
+      margin: 0;
+    }
+
+    /* Code block */
+    .code-block {
+      background-color: #151519;
+      border-radius: 8px;
+      padding: 18px 20px;
+      margin: 16px 0 16px;
+      font-family: 'IBM Plex Mono', 'Courier New', monospace;
+      font-size: 12px;
+      line-height: 20px;
+      color: #FBFBFF;
+      border: 1px solid #27272B;
+      overflow-x: auto;
+    }
+
+    .code-block .token-comment { color: #17B26A; }
+    .code-block .token-string  { color: #F1AA8C; }
+    .code-block .token-keyword { color: #80ACFF; }
+    .code-block .token-fn      { color: #FFD400; }
+
+    /* Framework pills */
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .pill {
+      display: inline-block;
+      background-color: #27272B;
+      border: 1px solid #333336;
+      border-radius: 6px;
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #D6D6DA;
+    }
+
+    /* Live features inline list */
+    .live-list {
+      margin: 16px 0 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .live-list li {
+      font-size: 14px;
+      line-height: 22px;
+      color: #909094;
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .live-list li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: #FFD400;
+      font-weight: 600;
+    }
+
+    /* Bottom CTA */
+    .bottom-cta {
+      background: linear-gradient(150deg, #1D1D20 0%, #18181B 100%);
+      border: 1px solid #27272B;
+      border-radius: 14px;
+      padding: 52px 48px;
+      text-align: center;
+      margin-top: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bottom-cta::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(130deg, #FFD400 -11.66%, #9242DB 67.59%, #3262FF 122.05%);
+    }
+
+    .bottom-cta h2 {
+      margin: 0 0 10px;
+      font-size: 26px;
+      font-weight: 700;
+      line-height: 36px;
+      color: #FBFBFF;
+      letter-spacing: -0.4px;
+    }
+
+    .bottom-cta p {
+      margin: 0 0 32px;
+      font-size: 15px;
+      line-height: 24px;
+      color: #909094;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 40px 0 0;
+    }
+
+    .footer p {
+      margin: 0 0 6px;
+      font-size: 12px;
+      color: #505054;
+    }
+
+    .footer a {
+      color: #505054;
+      text-decoration: none;
+    }
+
+    .footer .unsub {
+      font-size: 11px;
+      color: #333336;
+    }
+
+    .footer .unsub a {
+      color: #333336;
+      text-decoration: underline;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .hero { padding: 40px 28px; }
+      .hero h1 { font-size: 32px; line-height: 40px; }
+      .feature-card { padding: 28px 24px; }
+      .bottom-cta { padding: 40px 28px; }
+      .pill-row { gap: 6px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Preheader -->
+  <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">
+    Introducing Agentic Deployments in Zerve — APIs and apps, directly from your notebook.&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌
+  </div>
+
+  <div class="email-wrapper">
+    <div class="email-card">
+
+      <!-- Logo -->
+      <div class="logo-row">
+        <div class="logo-wordmark">
+          <svg width="22" height="22" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="g1" x1="-2" y1="10" x2="22" y2="10" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#FFD400"/>
+                <stop offset="67%" stop-color="#9242DB"/>
+                <stop offset="100%" stop-color="#3262FF"/>
+              </linearGradient>
+            </defs>
+            <path fill-rule="evenodd" clip-rule="evenodd"
+              d="M10 1.5L18.5 6.25V13.75L10 18.5L1.5 13.75V6.25L10 1.5Z"
+              fill="url(#g1)"/>
+          </svg>
+          Zerve AI
+        </div>
+      </div>
+
+      <!-- Gradient bar -->
+      <div class="gradient-bar"></div>
+
+      <!-- Hero -->
+      <div class="hero">
+        <div class="badge">Now Launching — Agentic Deployments</div>
+        <h1>Stop paying the<br/><span>deployment tax.</span></h1>
+        <p class="hero-subhead">
+          You spent days on the analysis. Then someone asks for an API. Or a dashboard. And suddenly you're rewriting everything in a separate repo, on a separate platform, with a separate deploy process.
+        </p>
+        <p class="hero-subhead"><strong>Not anymore.</strong></p>
+        <p class="hero-subhead">
+          Today we're launching <strong>Agentic Deployments</strong> in Zerve — turn any project into a live API or interactive app without leaving your workspace. The agent writes the deployment glue. You stay focused on the logic.
+        </p>
+        <a href="https://zerve.ai" class="btn-primary">Start for free →</a>
+      </div>
+
+      <!-- Features -->
+      <div class="features">
+
+        <!-- Feature 1 -->
+        <div class="feature-card">
+          <p class="feature-number">01</p>
+          <h2 class="feature-title">The agent handles the setup</h2>
+          <p class="feature-body">
+            Describe what you want to ship. The agent picks the framework, writes the entrypoint, and opens a deploy tab in your existing project. No new repo. No context switch.
+          </p>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="feature-card">
+          <p class="feature-number">02</p>
+          <h2 class="feature-title">Your notebook outputs, straight to production</h2>
+          <div class="code-block"><span class="token-keyword">model</span> = <span class="token-fn">variable</span>(<span class="token-string">"train_xgboost"</span>, <span class="token-string">"model"</span>)</div>
+          <p class="feature-body">
+            Load any model, DataFrame, or figure directly from your last notebook run. Re-run a cell — your deployment picks up the latest version automatically. No rebuilding pipelines. No copying files.
+          </p>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="feature-card">
+          <p class="feature-number">03</p>
+          <h2 class="feature-title">Any framework. Zero config.</h2>
+          <p class="feature-body">
+            Your stack, your rules. Switch frameworks without losing your DNS, environment, or variable bindings.
+          </p>
+          <div class="pill-row">
+            <span class="pill">Streamlit</span>
+            <span class="pill">FastAPI</span>
+            <span class="pill">Gradio</span>
+            <span class="pill">Flask</span>
+            <span class="pill">Dash</span>
+            <span class="pill">Plotly</span>
+          </div>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="feature-card">
+          <p class="feature-number">04</p>
+          <h2 class="feature-title">Live from the moment you deploy</h2>
+          <ul class="live-list">
+            <li>Hot reload in seconds</li>
+            <li>Streaming logs in real time</li>
+            <li>In-browser preview for apps, HTTP playground for APIs</li>
+            <li>No SSH. No log aggregators.</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Bottom CTA -->
+      <div class="bottom-cta">
+        <h2>The analysis was always<br/>the hard part.</h2>
+        <p>Shipping it shouldn't be.</p>
+        <a href="https://zerve.ai" class="btn-primary">Start for free →</a>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        <p>
+          © 2026 Zerve AI &nbsp;·&nbsp;
+          <a href="https://zerve.ai">zerve.ai</a> &nbsp;·&nbsp;
+          <a href="https://twitter.com/zerveai">@zerveai</a>
+        </p>
+        <p class="unsub">
+          You're receiving this because you signed up for Zerve AI updates.<br/>
+          <a href="#">Unsubscribe</a>
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>
