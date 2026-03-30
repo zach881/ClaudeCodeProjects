@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="supported-color-schemes" content="light dark" />
   <title>You built the analysis. Now ship it.</title>
   <!--[if mso]>
   <noscript>
@@ -14,8 +16,37 @@
     </xml>
   </noscript>
   <![endif]-->
+  <style>
+    /* Force dark mode colors — prevents Gmail Android from inverting */
+    :root { color-scheme: light dark; supported-color-schemes: light dark; }
+
+    /* Gmail dark mode override (u + .body targets Gmail specifically) */
+    u + .body .outer-wrap { background-color: #18181B !important; }
+    u + .body .card       { background-color: #1D1D20 !important; }
+    u + .body .h1         { color: #FBFBFF !important; }
+    u + .body .h2         { color: #FBFBFF !important; }
+    u + .body .body-text  { color: #909094 !important; }
+    u + .body .accent     { color: #FFD400 !important; }
+
+    @media (prefers-color-scheme: dark) {
+      .outer-wrap { background-color: #18181B !important; }
+      .card       { background-color: #1D1D20 !important; }
+      .h1         { color: #FBFBFF !important; }
+      .h2         { color: #FBFBFF !important; }
+      .body-text  { color: #909094 !important; }
+      .accent     { color: #FFD400 !important; }
+    }
+
+    @media only screen and (max-width: 600px) {
+      .email-container { width: 100% !important; }
+      .hero-pad        { padding: 36px 24px 32px !important; }
+      .feat-pad        { padding: 28px 24px !important; }
+      .h1-size         { font-size: 30px !important; line-height: 38px !important; }
+      .h2-size         { font-size: 17px !important; }
+    }
+  </style>
 </head>
-<body style="margin:0;padding:0;background-color:#18181B;font-family:'IBM Plex Sans',Arial,sans-serif;-webkit-font-smoothing:antialiased;">
+<body class="body" style="margin:0;padding:0;background-color:#18181B;font-family:'IBM Plex Sans',Arial,sans-serif;-webkit-font-smoothing:antialiased;">
 
   <!-- Preheader -->
   <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;font-size:1px;color:#18181B;">
@@ -23,12 +54,12 @@
   </div>
 
   <!-- Outer table -->
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#18181B;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="outer-wrap" style="background-color:#18181B;">
     <tr>
       <td align="center" style="padding:40px 16px;">
 
         <!-- Container -->
-        <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" class="email-container" style="max-width:600px;width:100%;">
 
           <!-- LOGO ROW -->
           <tr>
@@ -50,7 +81,7 @@
 
           <!-- HERO CARD -->
           <tr>
-            <td style="background-color:#1D1D20;border-radius:14px;padding:56px 48px 52px;text-align:center;">
+            <td class="card hero-pad" style="background-color:#1D1D20;border-radius:14px;padding:56px 48px 52px;text-align:center;">
 
               <!-- Badge -->
               <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 auto 28px;">
@@ -62,7 +93,7 @@
               </table>
 
               <!-- Headline -->
-              <h1 style="margin:0 0 24px;font-family:'IBM Plex Sans',Arial,sans-serif;font-size:40px;font-weight:700;line-height:50px;letter-spacing:-1px;color:#FBFBFF;">
+              <h1 class="h1 h1-size" style="margin:0 0 24px;font-family:'IBM Plex Sans',Arial,sans-serif;font-size:40px;font-weight:700;line-height:50px;letter-spacing:-1px;color:#FBFBFF;">
                 Stop paying the<br/>
                 <span style="color:#FFD400;">deployment tax.</span>
               </h1>
@@ -95,7 +126,7 @@
 
           <!-- FEATURE 1 -->
           <tr>
-            <td style="background-color:#1D1D20;border-radius:14px;padding:36px 40px;">
+            <td class="card feat-pad" style="background-color:#1D1D20;border-radius:14px;padding:36px 40px;">
               <p style="margin:0 0 10px;font-family:'IBM Plex Sans',Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#505054;">01</p>
               <h2 style="margin:0 0 12px;font-family:'IBM Plex Sans',Arial,sans-serif;font-size:20px;font-weight:600;line-height:28px;color:#FBFBFF;">The agent handles the setup</h2>
               <p style="margin:0;font-family:'IBM Plex Sans',Arial,sans-serif;font-size:14px;line-height:24px;color:#909094;">
@@ -109,7 +140,7 @@
 
           <!-- FEATURE 2 -->
           <tr>
-            <td style="background-color:#1D1D20;border-radius:14px;padding:36px 40px;">
+            <td class="card feat-pad" style="background-color:#1D1D20;border-radius:14px;padding:36px 40px;">
               <p style="margin:0 0 10px;font-family:'IBM Plex Sans',Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#505054;">02</p>
               <h2 style="margin:0 0 12px;font-family:'IBM Plex Sans',Arial,sans-serif;font-size:20px;font-weight:600;line-height:28px;color:#FBFBFF;">Your notebook outputs, straight to production</h2>
 
@@ -135,7 +166,7 @@
 
           <!-- FEATURE 3 -->
           <tr>
-            <td style="background-color:#1D1D20;border-radius:14px;padding:36px 40px;">
+            <td class="card feat-pad" style="background-color:#1D1D20;border-radius:14px;padding:36px 40px;">
               <p style="margin:0 0 10px;font-family:'IBM Plex Sans',Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#505054;">03</p>
               <h2 style="margin:0 0 12px;font-family:'IBM Plex Sans',Arial,sans-serif;font-size:20px;font-weight:600;line-height:28px;color:#FBFBFF;">Any framework. Zero config.</h2>
               <p style="margin:0 0 16px;font-family:'IBM Plex Sans',Arial,sans-serif;font-size:14px;line-height:24px;color:#909094;">
@@ -160,7 +191,7 @@
 
           <!-- FEATURE 4 -->
           <tr>
-            <td style="background-color:#1D1D20;border-radius:14px;padding:36px 40px;">
+            <td class="card feat-pad" style="background-color:#1D1D20;border-radius:14px;padding:36px 40px;">
               <p style="margin:0 0 10px;font-family:'IBM Plex Sans',Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#505054;">04</p>
               <h2 style="margin:0 0 16px;font-family:'IBM Plex Sans',Arial,sans-serif;font-size:20px;font-weight:600;line-height:28px;color:#FBFBFF;">Live from the moment you deploy</h2>
               <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
