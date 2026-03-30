@@ -16,37 +16,31 @@
     </xml>
   </noscript>
   <![endif]-->
-  <style>
-    /* Force dark mode colors — prevents Gmail Android from inverting */
-    :root { color-scheme: light dark; supported-color-schemes: light dark; }
+</head>
+<body class="body" style="margin:0;padding:0;background-color:#18181B;font-family:'IBM Plex Sans',Arial,sans-serif;-webkit-font-smoothing:antialiased;">
 
-    /* Gmail dark mode override (u + .body targets Gmail specifically) */
+  <!-- Style block in body so HubSpot doesn't strip it -->
+  <style>
+    :root { color-scheme: light dark; }
+    /* Gmail Android dark mode override */
     u + .body .outer-wrap { background-color: #18181B !important; }
     u + .body .card       { background-color: #1D1D20 !important; }
     u + .body .h1         { color: #FBFBFF !important; }
-    u + .body .h2         { color: #FBFBFF !important; }
-    u + .body .body-text  { color: #909094 !important; }
-    u + .body .accent     { color: #FFD400 !important; }
-
+    u + .body p           { color: #909094 !important; }
+    /* All clients dark mode */
     @media (prefers-color-scheme: dark) {
       .outer-wrap { background-color: #18181B !important; }
       .card       { background-color: #1D1D20 !important; }
       .h1         { color: #FBFBFF !important; }
-      .h2         { color: #FBFBFF !important; }
-      .body-text  { color: #909094 !important; }
-      .accent     { color: #FFD400 !important; }
     }
-
+    /* Mobile */
     @media only screen and (max-width: 600px) {
       .email-container { width: 100% !important; }
-      .hero-pad        { padding: 36px 24px 32px !important; }
-      .feat-pad        { padding: 28px 24px !important; }
-      .h1-size         { font-size: 30px !important; line-height: 38px !important; }
-      .h2-size         { font-size: 17px !important; }
+      .hero-pad  { padding: 36px 24px 32px !important; }
+      .feat-pad  { padding: 28px 24px !important; }
+      .h1-size   { font-size: 30px !important; line-height: 38px !important; }
     }
   </style>
-</head>
-<body class="body" style="margin:0;padding:0;background-color:#18181B;font-family:'IBM Plex Sans',Arial,sans-serif;-webkit-font-smoothing:antialiased;">
 
   <!-- Preheader -->
   <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;font-size:1px;color:#18181B;">
@@ -172,17 +166,15 @@
               <p style="margin:0 0 16px;font-family:'IBM Plex Sans',Arial,sans-serif;font-size:14px;line-height:24px;color:#909094;">
                 Your stack, your rules. Switch frameworks without losing your DNS, environment, or variable bindings.
               </p>
-              <!-- Framework pills as table -->
-              <table role="presentation" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td style="padding-right:6px;padding-bottom:6px;"><span style="display:inline-block;background-color:#27272B;border:1px solid #333336;border-radius:6px;padding:4px 12px;font-family:'IBM Plex Sans',Arial,sans-serif;font-size:12px;font-weight:500;color:#D6D6DA;">Streamlit</span></td>
-                  <td style="padding-right:6px;padding-bottom:6px;"><span style="display:inline-block;background-color:#27272B;border:1px solid #333336;border-radius:6px;padding:4px 12px;font-family:'IBM Plex Sans',Arial,sans-serif;font-size:12px;font-weight:500;color:#D6D6DA;">FastAPI</span></td>
-                  <td style="padding-right:6px;padding-bottom:6px;"><span style="display:inline-block;background-color:#27272B;border:1px solid #333336;border-radius:6px;padding:4px 12px;font-family:'IBM Plex Sans',Arial,sans-serif;font-size:12px;font-weight:500;color:#D6D6DA;">Gradio</span></td>
-                  <td style="padding-right:6px;padding-bottom:6px;"><span style="display:inline-block;background-color:#27272B;border:1px solid #333336;border-radius:6px;padding:4px 12px;font-family:'IBM Plex Sans',Arial,sans-serif;font-size:12px;font-weight:500;color:#D6D6DA;">Flask</span></td>
-                  <td style="padding-right:6px;padding-bottom:6px;"><span style="display:inline-block;background-color:#27272B;border:1px solid #333336;border-radius:6px;padding:4px 12px;font-family:'IBM Plex Sans',Arial,sans-serif;font-size:12px;font-weight:500;color:#D6D6DA;">Dash</span></td>
-                  <td style="padding-bottom:6px;"><span style="display:inline-block;background-color:#27272B;border:1px solid #333336;border-radius:6px;padding:4px 12px;font-family:'IBM Plex Sans',Arial,sans-serif;font-size:12px;font-weight:500;color:#D6D6DA;">Plotly</span></td>
-                </tr>
-              </table>
+              <!-- Framework pills — inline so they wrap naturally on mobile -->
+              <div>
+                <span style="display:inline-block;background-color:#27272B;border:1px solid #333336;border-radius:6px;padding:4px 12px;font-family:'IBM Plex Sans',Arial,sans-serif;font-size:12px;font-weight:500;color:#D6D6DA;margin:0 4px 6px 0;">Streamlit</span><!--
+                --><span style="display:inline-block;background-color:#27272B;border:1px solid #333336;border-radius:6px;padding:4px 12px;font-family:'IBM Plex Sans',Arial,sans-serif;font-size:12px;font-weight:500;color:#D6D6DA;margin:0 4px 6px 0;">FastAPI</span><!--
+                --><span style="display:inline-block;background-color:#27272B;border:1px solid #333336;border-radius:6px;padding:4px 12px;font-family:'IBM Plex Sans',Arial,sans-serif;font-size:12px;font-weight:500;color:#D6D6DA;margin:0 4px 6px 0;">Gradio</span><!--
+                --><span style="display:inline-block;background-color:#27272B;border:1px solid #333336;border-radius:6px;padding:4px 12px;font-family:'IBM Plex Sans',Arial,sans-serif;font-size:12px;font-weight:500;color:#D6D6DA;margin:0 4px 6px 0;">Flask</span><!--
+                --><span style="display:inline-block;background-color:#27272B;border:1px solid #333336;border-radius:6px;padding:4px 12px;font-family:'IBM Plex Sans',Arial,sans-serif;font-size:12px;font-weight:500;color:#D6D6DA;margin:0 4px 6px 0;">Dash</span><!--
+                --><span style="display:inline-block;background-color:#27272B;border:1px solid #333336;border-radius:6px;padding:4px 12px;font-family:'IBM Plex Sans',Arial,sans-serif;font-size:12px;font-weight:500;color:#D6D6DA;margin:0 4px 6px 0;">Plotly</span>
+              </div>
             </td>
           </tr>
 
