@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zerve — DAG Notebooks</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #18181B;
+      color: #FBFBFF;
+      font-family: 'IBM Plex Sans', Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ── Layout ── */
+    .section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      max-width: 1160px;
+      width: 100%;
+      padding: 96px 48px;
+      align-items: center;
+    }
+
+    /* ── Left copy ── */
+    .copy-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #FFD400;
+      margin-bottom: 20px;
+    }
+
+    .copy-heading {
+      font-size: 42px;
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -1px;
+      color: #FBFBFF;
+      margin-bottom: 24px;
+    }
+
+    .copy-body {
+      font-size: 16px;
+      line-height: 28px;
+      color: #909094;
+    }
+
+    .copy-body strong {
+      color: #FBFBFF;
+      font-weight: 600;
+    }
+
+    /* ── Product mockup window ── */
+    .mockup-window {
+      background: #111113;
+      border: 1px solid #27272B;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04);
+    }
+
+    /* title bar */
+    .window-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: #1A1A1D;
+      border-bottom: 1px solid #27272B;
+    }
+
+    .window-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .window-dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .window-dots .dot-red  { background: #FF5F57; }
+    .window-dots .dot-yellow { background: #FFBD2E; }
+    .window-dots .dot-green { background: #28C840; }
+
+    .window-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #909094;
+      letter-spacing: 0.3px;
+    }
+
+    .window-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-sm {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 5px;
+      border: 1px solid #333336;
+      background: #27272B;
+      color: #909094;
+      cursor: pointer;
+    }
+
+    .btn-run {
+      background: #FFD400;
+      color: #0D0D11;
+      border-color: #FFD400;
+      font-weight: 600;
+    }
+
+    /* tab strip */
+    .tab-strip {
+      display: flex;
+      gap: 0;
+      background: #151518;
+      border-bottom: 1px solid #27272B;
+    }
+
+    .tab {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 8px 16px;
+      color: #505054;
+      cursor: pointer;
+      border-right: 1px solid #27272B;
+    }
+
+    .tab.active {
+      color: #FBFBFF;
+      background: #111113;
+      border-bottom: 2px solid #FFD400;
+      margin-bottom: -1px;
+    }
+
+    /* cells list */
+    .cells {
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .cell {
+      background: #1A1A1D;
+      border: 1px solid #27272B;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    .cell.running {
+      border-color: #FFD40066;
+      box-shadow: 0 0 0 1px #FFD40022;
+    }
+
+    .cell-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 10px;
+      background: #111113;
+      border-bottom: 1px solid #27272B;
+    }
+
+    .cell-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cell-status {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .status-cached { background: #3ECF8E; }
+    .status-running { background: #FFD400; animation: pulse 1.2s infinite; }
+    .status-pending { background: #505054; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .cell-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: #FBFBFF;
+    }
+
+    .lang-badge {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+
+    .lang-sql    { background: #3262FF22; color: #80ACFF; border: 1px solid #3262FF44; }
+    .lang-python { background: #3ECF8E22; color: #3ECF8E; border: 1px solid #3ECF8E44; }
+    .lang-r      { background: #9242DB22; color: #C27EFF; border: 1px solid #9242DB44; }
+    .lang-pyspark{ background: #FF6B3522; color: #FF9B6B; border: 1px solid #FF6B3544; }
+
+    .cell-time {
+      font-size: 10px;
+      color: #505054;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    .cell-code {
+      padding: 8px 10px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      line-height: 18px;
+      color: #909094;
+    }
+
+    .kw   { color: #80ACFF; }
+    .str  { color: #F1AA8C; }
+    .fn   { color: #FFD400; }
+    .var  { color: #FBFBFF; }
+    .cmt  { color: #505054; }
+    .num  { color: #3ECF8E; }
+
+    /* cell output */
+    .cell-output {
+      padding: 6px 10px 8px;
+      border-top: 1px solid #27272B;
+      background: #111113;
+    }
+
+    .output-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #505054;
+      margin-bottom: 4px;
+    }
+
+    .output-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      font-family: 'IBM Plex Mono', monospace;
+      color: #909094;
+      background: #1D1D20;
+      border: 1px solid #27272B;
+      border-radius: 4px;
+      padding: 2px 8px;
+    }
+
+    .output-pill .dot { width: 5px; height: 5px; border-radius: 50%; background: #3ECF8E; }
+
+    /* no-shared-state badge */
+    .isolation-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      color: #FFD400;
+      background: #FFD40010;
+      border: 1px solid #FFD40030;
+      border-radius: 3px;
+      padding: 2px 6px;
+    }
+
+    /* ── Canvas / DAG panel ── */
+    .dag-panel {
+      border-top: 1px solid #27272B;
+      background: #0F0F12;
+      padding: 10px 12px 12px;
+    }
+
+    .dag-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .dag-panel-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #505054;
+    }
+
+    .dag-controls {
+      display: flex;
+      gap: 4px;
+    }
+
+    .dag-btn {
+      width: 18px;
+      height: 18px;
+      border-radius: 3px;
+      background: #1D1D20;
+      border: 1px solid #27272B;
+      color: #505054;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    /* DAG graph */
+    .dag-graph {
+      position: relative;
+      height: 88px;
+    }
+
+    .dag-graph svg {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      overflow: visible;
+    }
+
+    .dag-nodes {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .dag-node {
+      position: absolute;
+      background: #1D1D20;
+      border: 1px solid #27272B;
+      border-radius: 6px;
+      padding: 5px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 96px;
+    }
+
+    .dag-node.cached { border-color: #3ECF8E55; }
+    .dag-node.running { border-color: #FFD40066; box-shadow: 0 0 8px #FFD40022; }
+    .dag-node.pending { opacity: 0.5; }
+
+    .dag-node-name {
+      font-size: 10px;
+      font-weight: 600;
+      color: #FBFBFF;
+      white-space: nowrap;
+    }
+
+    .dag-node-meta {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 9px;
+      font-family: 'IBM Plex Mono', monospace;
+      color: #505054;
+    }
+
+    .dag-node-meta .dot { width: 5px; height: 5px; border-radius: 50%; }
+    .dot-green { background: #3ECF8E; }
+    .dot-yellow { background: #FFD400; }
+    .dot-gray { background: #505054; }
+
+    /* status bar */
+    .status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 12px;
+      background: #0F0F12;
+      border-top: 1px solid #1D1D20;
+      font-size: 10px;
+      font-family: 'IBM Plex Mono', monospace;
+      color: #505054;
+    }
+
+    .status-bar .status-left {
+      display: flex;
+      gap: 12px;
+    }
+
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .status-indicator .dot { width: 5px; height: 5px; border-radius: 50%; }
+  </style>
+</head>
+<body>
+  <section class="section">
+
+    <!-- Left: copy -->
+    <div class="copy">
+      <p class="copy-label">DAG Notebooks</p>
+      <h2 class="copy-heading">Every cell its own runtime. Every language in the same workflow.</h2>
+      <p class="copy-body">
+        Zerve notebooks are DAG-based — <strong>no shared state</strong>,
+        <strong>cached outputs</strong>, fully reproducible.
+        SQL, Python, R, and PySpark interoperate natively so your workflow
+        matches your thinking, not your tooling.
+      </p>
+    </div>
+
+    <!-- Right: product mockup -->
+    <div class="mockup-window">
+
+      <!-- title bar -->
+      <div class="window-bar">
+        <div class="window-dots">
+          <span class="dot-red"></span>
+          <span class="dot-yellow"></span>
+          <span class="dot-green"></span>
+        </div>
+        <span class="window-title">Churn Analysis</span>
+        <div class="window-actions">
+          <button class="btn-sm">Canvas View</button>
+          <button class="btn-sm btn-run">▶ Run All</button>
+        </div>
+      </div>
+
+      <!-- tab strip -->
+      <div class="tab-strip">
+        <div class="tab active">Notebook</div>
+        <div class="tab">Variables</div>
+        <div class="tab">Schedule</div>
+      </div>
+
+      <!-- cells -->
+      <div class="cells">
+
+        <!-- Cell 1: SQL -->
+        <div class="cell">
+          <div class="cell-header">
+            <div class="cell-left">
+              <span class="cell-status status-cached"></span>
+              <span class="cell-name">load_customers</span>
+              <span class="lang-badge lang-sql">SQL</span>
+              <span class="isolation-badge">isolated runtime</span>
+            </div>
+            <span class="cell-time">0.8s</span>
+          </div>
+          <div class="cell-code">
+            <span class="kw">SELECT</span> customer_id, plan, created_at, region<br/>
+            <span class="kw">FROM</span> analytics.customers<br/>
+            <span class="kw">WHERE</span> active = <span class="num">true</span>
+            <span class="kw"> AND</span> created_at &gt; <span class="str">'2024-01-01'</span>
+          </div>
+          <div class="cell-output">
+            <div class="output-label">Output</div>
+            <span class="output-pill"><span class="dot"></span>DataFrame · 48,312 rows · cached</span>
+          </div>
+        </div>
+
+        <!-- Cell 2: Python -->
+        <div class="cell">
+          <div class="cell-header">
+            <div class="cell-left">
+              <span class="cell-status status-cached"></span>
+              <span class="cell-name">engineer_features</span>
+              <span class="lang-badge lang-python">Python</span>
+              <span class="isolation-badge">isolated runtime</span>
+            </div>
+            <span class="cell-time">1.4s</span>
+          </div>
+          <div class="cell-code">
+            <span class="cmt"># reads cached output — no re-query</span><br/>
+            <span class="var">df</span> = <span class="fn">upstream</span>(<span class="str">"load_customers"</span>)<br/>
+            <span class="var">df</span>[<span class="str">"tenure_days"</span>] = (now - <span class="var">df</span>[<span class="str">"created_at"</span>]).days<br/>
+            <span class="var">df</span>[<span class="str">"risk_score"</span>] = <span class="fn">churn_model</span>.<span class="fn">predict</span>(<span class="var">df</span>)
+          </div>
+          <div class="cell-output">
+            <div class="output-label">Output</div>
+            <span class="output-pill"><span class="dot"></span>DataFrame · 48,312 rows · cached</span>
+          </div>
+        </div>
+
+        <!-- Cell 3: R -->
+        <div class="cell">
+          <div class="cell-header">
+            <div class="cell-left">
+              <span class="cell-status status-cached"></span>
+              <span class="cell-name">statistical_summary</span>
+              <span class="lang-badge lang-r">R</span>
+              <span class="isolation-badge">isolated runtime</span>
+            </div>
+            <span class="cell-time">2.1s</span>
+          </div>
+          <div class="cell-code">
+            <span class="var">features</span> &lt;- <span class="fn">upstream</span>(<span class="str">"engineer_features"</span>)<br/>
+            <span class="fn">ggplot</span>(<span class="var">features</span>, <span class="fn">aes</span>(x=risk_score, fill=plan)) +<br/>
+            &nbsp;&nbsp;<span class="fn">geom_histogram</span>(bins=<span class="num">40</span>) + <span class="fn">theme_zerve</span>()
+          </div>
+          <div class="cell-output">
+            <div class="output-label">Output</div>
+            <span class="output-pill"><span class="dot"></span>ggplot · histogram · cached</span>
+          </div>
+        </div>
+
+        <!-- Cell 4: PySpark — running -->
+        <div class="cell running">
+          <div class="cell-header">
+            <div class="cell-left">
+              <span class="cell-status status-running"></span>
+              <span class="cell-name">segment_at_scale</span>
+              <span class="lang-badge lang-pyspark">PySpark</span>
+              <span class="isolation-badge">isolated runtime</span>
+            </div>
+            <span class="cell-time">3.2s…</span>
+          </div>
+          <div class="cell-code">
+            <span class="var">spark_df</span> = <span class="fn">spark_upstream</span>(<span class="str">"engineer_features"</span>)<br/>
+            <span class="var">segments</span> = <span class="var">spark_df</span>.<span class="fn">groupBy</span>(<span class="str">"plan"</span>)<br/>
+            &nbsp;&nbsp;.<span class="fn">agg</span>(<span class="fn">avg</span>(<span class="str">"risk_score"</span>).<span class="fn">alias</span>(<span class="str">"avg_risk"</span>))
+          </div>
+        </div>
+
+      </div><!-- /cells -->
+
+      <!-- DAG / Canvas panel -->
+      <div class="dag-panel">
+        <div class="dag-panel-header">
+          <span class="dag-panel-label">Canvas</span>
+          <div class="dag-controls">
+            <div class="dag-btn">+</div>
+            <div class="dag-btn">−</div>
+          </div>
+        </div>
+
+        <!-- SVG edges -->
+        <div class="dag-graph">
+          <svg viewBox="0 0 480 88" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- load_customers → engineer_features -->
+            <path d="M 108 28 C 140 28 148 28 176 28" stroke="#3ECF8E" stroke-width="1.5" fill="none" opacity="0.5"/>
+            <!-- engineer_features → statistical_summary -->
+            <path d="M 284 20 C 316 20 316 14 348 14" stroke="#3ECF8E" stroke-width="1.5" fill="none" opacity="0.5"/>
+            <!-- engineer_features → segment_at_scale -->
+            <path d="M 284 36 C 316 36 316 60 348 60" stroke="#FFD400" stroke-width="1.5" fill="none" opacity="0.5" stroke-dasharray="4 3"/>
+          </svg>
+
+          <!-- Nodes -->
+          <div class="dag-nodes">
+            <!-- load_customers: x=0 -->
+            <div class="dag-node cached" style="left:0; top:14px;">
+              <span class="dag-node-name">load_customers</span>
+              <div class="dag-node-meta">
+                <span class="dot dot-green"></span>
+                <span>SQL · 0.8s · cached</span>
+              </div>
+            </div>
+
+            <!-- engineer_features: x=176 -->
+            <div class="dag-node cached" style="left:176px; top:14px;">
+              <span class="dag-node-name">engineer_features</span>
+              <div class="dag-node-meta">
+                <span class="dot dot-green"></span>
+                <span>Python · 1.4s · cached</span>
+              </div>
+            </div>
+
+            <!-- statistical_summary: x=348, y=0 -->
+            <div class="dag-node cached" style="left:348px; top:0px;">
+              <span class="dag-node-name">statistical_summary</span>
+              <div class="dag-node-meta">
+                <span class="dot dot-green"></span>
+                <span>R · 2.1s · cached</span>
+              </div>
+            </div>
+
+            <!-- segment_at_scale: x=348, y=46 -->
+            <div class="dag-node running" style="left:348px; top:46px;">
+              <span class="dag-node-name">segment_at_scale</span>
+              <div class="dag-node-meta">
+                <span class="dot dot-yellow"></span>
+                <span>PySpark · running…</span>
+              </div>
+            </div>
+          </div>
+        </div><!-- /dag-graph -->
+      </div><!-- /dag-panel -->
+
+      <!-- Status bar -->
+      <div class="status-bar">
+        <div class="status-left">
+          <div class="status-indicator">
+            <span class="dot dot-yellow"></span>
+            <span>1 running</span>
+          </div>
+          <div class="status-indicator">
+            <span class="dot dot-green"></span>
+            <span>3 cached</span>
+          </div>
+        </div>
+        <span>No shared state · reproducible</span>
+      </div>
+
+    </div><!-- /mockup-window -->
+
+  </section>
+</body>
+</html>
