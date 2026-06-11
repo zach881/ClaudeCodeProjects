@@ -1,0 +1,13 @@
+# The repo root .gitignore excludes package.json / package-lock.json globally.
+# Re-include them here — they're essential to this app.
+!package.json
+!package-lock.json
+
+node_modules/
+.next/
+out/
+.env
+.env.local
+.data/
+*.tsbuildinfo
+next-env.d.ts
