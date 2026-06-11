@@ -14,7 +14,9 @@ export type AgentKind =
   | "seo.brief"
   | "seo.draft"
   | "content.gaps"
-  | "content.calendar";
+  | "content.calendar"
+  | "outreach.enrich"
+  | "outreach.sequence";
 
 export interface Run {
   id: string;

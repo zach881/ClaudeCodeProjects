@@ -7,6 +7,7 @@ const links = [
   { href: "/", label: "Dashboard" },
   { href: "/seo", label: "SEO Agent" },
   { href: "/content", label: "Content Strategist" },
+  { href: "/outreach", label: "Outreach" },
 ];
 
 export function Nav() {

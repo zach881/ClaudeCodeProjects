@@ -5,6 +5,7 @@ import {
   contentBriefSchema,
 } from "@/agents/schemas";
 import type { KeywordResearch, ContentBrief } from "@/agents/types";
+import { getKeywordMetrics } from "@/lib/seo-data";
 
 const SEO_SYSTEM = `
 You are the SEO Agent for Zerve's internal marketing platform. You do keyword
@@ -36,13 +37,44 @@ and where Zerve can realistically rank and convert. Keep the summary to 2-4
 sentences of strategic takeaways.
 `.trim();
 
-  return structuredCall<KeywordResearch>({
+  const result = await structuredCall<KeywordResearch>({
     system: SEO_SYSTEM,
     prompt,
     schema: keywordResearchSchema,
     enableSearch: true,
     researchQuery: `Research current search interest, related queries, and competing content for "${input.seed}" aimed at a data-science / AI-engineering audience.${input.notes ? ` Context: ${input.notes}` : ""}`,
   });
+
+  return enrichWithMetrics(result);
+}
+
+/**
+ * Layer measured metrics (Ahrefs volume/difficulty, Search Console position)
+ * onto the model's keyword estimates when an SEO data provider is configured.
+ * Re-ranks priorityScore mildly so genuinely high-volume / low-difficulty
+ * keywords float up. No-op when no provider is set.
+ */
+async function enrichWithMetrics(
+  result: KeywordResearch,
+): Promise<KeywordResearch> {
+  const all = result.clusters.flatMap((c) => c.keywords.map((k) => k.keyword));
+  const metrics = await getKeywordMetrics(all);
+  if (metrics.size === 0) return result;
+
+  for (const cluster of result.clusters) {
+    for (const k of cluster.keywords) {
+      const m = metrics.get(k.keyword.trim().toLowerCase());
+      if (!m) {
+        k.metricSource = "estimated";
+        continue;
+      }
+      k.searchVolume = m.searchVolume ?? null;
+      k.keywordDifficulty = m.keywordDifficulty ?? null;
+      k.currentPosition = m.currentPosition ?? null;
+      k.metricSource = m.source;
+    }
+  }
+  return result;
 }
 
 /** Content brief: a structured, writer-ready brief for a target keyword. */

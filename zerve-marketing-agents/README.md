@@ -3,13 +3,16 @@
 An internal AI marketing-agent platform for **Zerve**, inspired by
 [Graphed](https://www.graphed.com/). It deploys autonomous agents that you
 configure in plain language; each one researches, reasons, and returns a
-structured, ready-to-use result. This first build ships two agents:
+structured, ready-to-use result. This build ships three agents:
 
-- **SEO Agent** — keyword research (with funnel mapping + priority scoring),
-  writer-ready content briefs, and full Markdown drafts. Grounded with live
-  `web_search`.
+- **SEO Agent** — keyword research (funnel mapping + priority scoring), with
+  **measured volume/difficulty from Ahrefs and rankings from Search Console**
+  when configured (model estimates otherwise); writer-ready content briefs; and
+  full Markdown drafts. Grounded with live `web_search`.
 - **Content Strategist Agent** — content-gap analysis across the funnel and a
   prioritized, week-by-week content calendar.
+- **Outreach Agent** — enriches target accounts + contacts via **Clay** (through
+  the Anthropic MCP connector) and drafts personalized multi-touch sequences.
 
 Both agents are powered by **Claude (`claude-opus-4-8`)** via the Anthropic SDK,
 using adaptive thinking + high effort, structured outputs for the data, and
@@ -57,11 +60,20 @@ npm run dev                 # http://localhost:3000
 
 ## Configuration
 
-| Env var               | Default          | Purpose                          |
-| --------------------- | ---------------- | -------------------------------- |
-| `ANTHROPIC_API_KEY`   | _(required)_     | Powers the agents                |
-| `ZERVE_AGENT_MODEL`   | `claude-opus-4-8`| Override the model               |
-| `ZERVE_DATA_DIR`      | `./.data`        | Where run history is stored      |
+| Env var               | Default          | Purpose                                   |
+| --------------------- | ---------------- | ----------------------------------------- |
+| `ANTHROPIC_API_KEY`   | _(required)_     | Powers the agents                         |
+| `ZERVE_AGENT_MODEL`   | `claude-opus-4-8`| Override the model                        |
+| `ZERVE_DATA_DIR`      | `./.data`        | Where run history is stored               |
+| `CLAY_MCP_URL`        | _(optional)_     | Clay MCP server — enables real enrichment |
+| `CLAY_MCP_AUTH_TOKEN` | _(optional)_     | Auth for the Clay MCP server              |
+| `AHREFS_API_TOKEN`    | _(optional)_     | Measured keyword volume + difficulty      |
+| `GSC_ACCESS_TOKEN`    | _(optional)_     | Search Console token (existing rankings)  |
+| `GSC_SITE_URL`        | _(optional)_     | Verified Search Console property          |
+
+All integration env vars are optional: without Clay the Outreach agent uses
+web-search enrichment; without Ahrefs/Search Console the SEO agent uses model
+estimates. Set them to upgrade to measured data.
 
 ## Tuning the agents
 
@@ -73,14 +85,13 @@ npm run dev                 # http://localhost:3000
 
 ## Roadmap (matching Graphed's surface)
 
+- [x] **Outreach Agent** — enrich via Clay + draft sequences.
+- [x] **SEO data layer** — Ahrefs + Search Console adapters (opt-in).
 - [ ] **Paid Ads Agent** — monitor Meta/Google campaigns, flag underperformers.
-- [ ] **Outreach Agent** — sequence + enrich prospects (Clay is already a likely
-      integration point for this team).
-- [ ] **Data layer** — connect real sources (GA4, Search Console, Ahrefs) so
-      volume/difficulty/rankings are measured, not estimated.
+- [ ] **More data sources** — GA4, Semrush; replace remaining estimates.
 - [ ] **Scheduling** — run agents on a cadence and post results to Slack.
 - [ ] **Auth + multi-user** and a Postgres-backed store.
 
-> Note: keyword volume/difficulty and content-gap impact are honest qualitative
-> estimates from the model. Wire in a real SEO data source (Search Console /
-> Ahrefs / Semrush) to replace estimates with measured numbers.
+> Note: content-gap impact and (without Ahrefs/Search Console) keyword
+> volume/difficulty are honest qualitative estimates from the model. Configure
+> the integration env vars to replace estimates with measured numbers.

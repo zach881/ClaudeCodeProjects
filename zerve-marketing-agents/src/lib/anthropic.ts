@@ -70,6 +70,59 @@ async function gatherResearch(system: string, query: string): Promise<string> {
 }
 
 /**
+ * Gather information using remote MCP servers (e.g. Clay enrichment) as free-form
+ * text. Like gatherResearch, this is the "tool" phase kept separate from the JSON
+ * structuring phase. Uses the beta MCP connector + adaptive thinking.
+ */
+export async function gatherWithMcp(opts: {
+  system: string;
+  prompt: string;
+  mcpServers: Record<string, unknown>[];
+  maxTokens?: number;
+}): Promise<string> {
+  const anthropic = getClient();
+  const messages: Anthropic.MessageParam[] = [
+    { role: "user", content: opts.prompt },
+  ];
+  const body = {
+    model: AGENT_MODEL,
+    max_tokens: opts.maxTokens ?? 12000,
+    thinking: { type: "adaptive" },
+    output_config: { effort: "high" },
+    system: opts.system,
+    mcp_servers: opts.mcpServers,
+    betas: ["mcp-client-2025-11-20"],
+    messages,
+  };
+
+  let final: { content: unknown[]; stop_reason: string | null } | null = null;
+  for (let i = 0; i < 8; i++) {
+    const response = (await (
+      anthropic as unknown as {
+        beta: { messages: { create: (b: unknown) => Promise<unknown> } };
+      }
+    ).beta.messages.create(body)) as {
+      content: Array<{ type: string; text?: string }>;
+      stop_reason: string | null;
+    };
+    if (response.stop_reason === "pause_turn") {
+      messages.push({
+        role: "assistant",
+        content: response.content as unknown as Anthropic.MessageParam["content"],
+      });
+      continue;
+    }
+    final = response;
+    break;
+  }
+  if (!final) return "";
+  return (final.content as Array<{ type: string; text?: string }>)
+    .filter((b) => b.type === "text" && b.text)
+    .map((b) => b.text as string)
+    .join("");
+}
+
+/**
  * Run a structured-output request: Claude is constrained to a JSON schema and we
  * return the parsed object. Uses adaptive thinking + high effort for quality.
  *

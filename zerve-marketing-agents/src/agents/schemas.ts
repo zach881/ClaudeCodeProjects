@@ -83,6 +83,50 @@ export const gapAnalysisSchema = obj({
   },
 });
 
+export const enrichmentSchema = obj({
+  company: obj({
+    name: { type: "string" },
+    domain: { type: "string" },
+    description: { type: "string" },
+    industry: { type: "string" },
+    headcount: { type: "string" },
+    techStack: strArray,
+    recentSignals: strArray,
+  }),
+  contacts: {
+    type: "array",
+    items: obj({
+      name: { type: "string" },
+      title: { type: "string" },
+      seniority: { type: "string" },
+      location: { type: "string" },
+      linkedinUrl: { type: "string" },
+      email: { type: "string" },
+      relevanceToZerve: { type: "string" },
+      personalizationHooks: strArray,
+    }),
+  },
+  fit: { type: "string" },
+  source: { type: "string" },
+});
+
+export const sequenceSchema = obj({
+  prospectName: { type: "string" },
+  prospectCompany: { type: "string" },
+  summary: { type: "string" },
+  steps: {
+    type: "array",
+    items: obj({
+      step: { type: "integer" },
+      channel: { type: "string" },
+      dayOffset: { type: "integer" },
+      subject: { type: "string" },
+      body: { type: "string" },
+      rationale: { type: "string" },
+    }),
+  },
+});
+
 export const contentCalendarSchema = obj({
   summary: { type: "string" },
   items: {

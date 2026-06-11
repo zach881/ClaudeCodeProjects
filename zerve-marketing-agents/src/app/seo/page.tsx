@@ -107,7 +107,16 @@ function KeywordsTab() {
 
       {data && (
         <div className="space-y-4">
-          <div className="card text-sm text-slate-200">{data.summary}</div>
+          <div className="card space-y-2 text-sm text-slate-200">
+            <p>{data.summary}</p>
+            <p className="text-xs text-muted">
+              {data.clusters.some((c) =>
+                c.keywords.some((k) => k.searchVolume != null),
+              )
+                ? "Volume & difficulty are measured (Ahrefs); rank is from Search Console where available."
+                : "Volume & difficulty are model estimates. Set AHREFS_API_TOKEN / Search Console env vars for measured data."}
+            </p>
+          </div>
           {data.clusters.map((cluster, i) => (
             <div key={i} className="card">
               <div className="mb-3">
@@ -121,8 +130,9 @@ function KeywordsTab() {
                       <th className="py-1 pr-3">Keyword</th>
                       <th className="py-1 pr-3">Intent</th>
                       <th className="py-1 pr-3">Funnel</th>
-                      <th className="py-1 pr-3">Vol</th>
-                      <th className="py-1 pr-3">Diff</th>
+                      <th className="py-1 pr-3">Volume</th>
+                      <th className="py-1 pr-3">Difficulty</th>
+                      <th className="py-1 pr-3">Rank</th>
                       <th className="py-1">Score</th>
                     </tr>
                   </thead>
@@ -135,10 +145,30 @@ function KeywordsTab() {
                           <FunnelBadge value={k.funnelStage} />
                         </td>
                         <td className="py-1.5 pr-3">
-                          <LevelBadge value={k.estVolume} />
+                          {k.searchVolume != null ? (
+                            <span
+                              className="font-medium"
+                              title="Measured (Ahrefs)"
+                            >
+                              {k.searchVolume.toLocaleString()}
+                            </span>
+                          ) : (
+                            <LevelBadge value={k.estVolume} />
+                          )}
                         </td>
                         <td className="py-1.5 pr-3">
-                          <LevelBadge value={k.estDifficulty} />
+                          {k.keywordDifficulty != null ? (
+                            <span className="font-medium" title="Measured (Ahrefs)">
+                              {k.keywordDifficulty}
+                            </span>
+                          ) : (
+                            <LevelBadge value={k.estDifficulty} />
+                          )}
+                        </td>
+                        <td className="py-1.5 pr-3 text-muted">
+                          {k.currentPosition != null
+                            ? `#${k.currentPosition}`
+                            : "—"}
                         </td>
                         <td className="py-1.5">
                           <Score value={k.priorityScore} />

@@ -10,12 +10,15 @@ const kindLabel: Record<Run["kind"], string> = {
   "seo.draft": "Content draft",
   "content.gaps": "Gap analysis",
   "content.calendar": "Content calendar",
+  "outreach.enrich": "Account enrichment",
+  "outreach.sequence": "Outreach sequence",
 };
 
 export default async function DashboardPage() {
   const runs = await listRuns(20);
   const seoCount = runs.filter((r) => r.kind.startsWith("seo")).length;
   const contentCount = runs.filter((r) => r.kind.startsWith("content")).length;
+  const outreachCount = runs.filter((r) => r.kind.startsWith("outreach")).length;
 
   return (
     <div className="space-y-8">
@@ -30,13 +33,14 @@ export default async function DashboardPage() {
         </p>
       </section>
 
-      <section className="grid gap-4 sm:grid-cols-3">
+      <section className="grid gap-4 sm:grid-cols-4">
         <Stat label="Total runs" value={runs.length} />
         <Stat label="SEO runs" value={seoCount} />
         <Stat label="Strategy runs" value={contentCount} />
+        <Stat label="Outreach runs" value={outreachCount} />
       </section>
 
-      <section className="grid gap-4 md:grid-cols-2">
+      <section className="grid gap-4 md:grid-cols-3">
         <Link href="/seo" className="card group transition hover:border-accent">
           <h2 className="text-lg font-semibold">SEO Agent</h2>
           <p className="mt-1 text-sm text-muted">
@@ -58,6 +62,19 @@ export default async function DashboardPage() {
           </p>
           <span className="mt-3 inline-block text-sm font-medium text-accent2 group-hover:underline">
             Open Content Strategist →
+          </span>
+        </Link>
+        <Link
+          href="/outreach"
+          className="card group transition hover:border-accent"
+        >
+          <h2 className="text-lg font-semibold">Outreach Agent</h2>
+          <p className="mt-1 text-sm text-muted">
+            Enrich target accounts and contacts with Clay, then draft
+            personalized, multi-touch outreach sequences for Zerve&apos;s ICP.
+          </p>
+          <span className="mt-3 inline-block text-sm font-medium text-accent group-hover:underline">
+            Open Outreach Agent →
           </span>
         </Link>
       </section>
